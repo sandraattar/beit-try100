@@ -1,0 +1,14 @@
+body{
+  padding-top:80px;
+  word-wrap:break-word;
+
+}
+img{
+  height: 200px;
+}
+
+.icon{
+  border-radius: 146px 146px 146px 146px;
+  width: 200px;
+  border:  4px dashed black;
+}
