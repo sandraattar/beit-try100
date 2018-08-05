@@ -3,60 +3,30 @@
 
 <head>
   <title>Beit </title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="style.css">
+  <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> -->
+  <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> -->
+  <link rel="stylesheet" href="profile.css">
+  <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
 </head>
 
 <body>
   <div class="container">
 
-    <div class="page-header text-center">
-      <h1><span class="fa fa-home"></span> Profile Page</h1>
+    <div class="page-header">
       <a href="/logout" class="btn btn-default btn-sm">Logout</a>
     </div>
 
-    <div class="row">
+    <div class="about">
+      <h1>Beit <span lang="ar">بيت</span> </h1>
+    </div>
 
-      <!-- LOCAL INFORMATION -->
-      <!-- <div class="col-sm-6">
-      <div class="well">
-      <h3><span class="fa fa-user"></span> Local</h3>
-
-      <% if (user.local.email) { %>
-      <p>
-      <strong>id</strong>:
-      <%= user._id %><br>
-      <strong>email</strong>:
-      <%= user.local.email %><br>
-      <strong>password</strong>:
-      <%= user.local.password %>
-    </p>
-
-    <a href="/unlink/local" class="btn btn-default">Unlink</a>
-    <% } else { %>
-    <a href="/connect/local" class="btn btn-default">Connect Local</a>
-    <% } %>
-
-  </div>
-</div> -->
-      <!-- <div class="col-sm-6">
-        <h3>Postings</h3>
-        <ul class="postings">
-          <% for(var i=0; i< postings.length; i++) {%>
-            <li class="posting">
-              <span><%= postings[i].name %></span>
-              <span><%= postings[i].msg %></span>
-              <span><%= postings[i].thumbUp %></span>
-              <span><%= postings[i].song %></span>
-              <span><i class="fa fa-thumbs-up" aria-hidden="true"></i></span>
-              <span><i class="fa fa-thumbs-down" aria-hidden="true"></i></span>
-              <span><i class="fa fa-trash" aria-hidden="true"></i></span>
-            </li>
-            <% } %>
-        </ul> -->
-
+    <div class="add-change-sort">
       <h2>Add a posting</h2>
+      <button type="button" name="button">change view</button>
+      <button type="button" name="button">sort by</button>
+    </div>
+
+    <div class="inputs">
       <% if (user.local.email) { %>
         <form action="/api/posting" method="POST">
           <label for="name">Refugee Name</label>
@@ -67,37 +37,48 @@
 
           <label for="status">I am Looking for:</label>
           <select id="status" class="" name="status">
-          <option value="shelter" selected="selected">shelter</option>
-          <option value="food">food</option>
-          <option value="shower">shower</option>
-          <option value="hosted">hosted</option>
-        </select>
+            <option value="shelter" selected="selected">shelter</option>
+            <option value="food">food</option>
+            <option value="shower">shower</option>
+            <option value="hosted">hosted</option>
+          </select>
 
           <button type="submit">Submit</button>
         </form>
         <% } %>
-
-          <ul class="postings">
-            <% for(var i=0; i<postings.length; i++) {%>
-              <li class="posting">
-                <h3><%= postings[i].name %></h3>
-                <p>
-                  <%= postings[i].location %>
-                </p>
-                <p>
-                  <%= postings[i].status %>
-                </p>
-
-                <button type="button" name="button" class="change-status">Change Status</button>
-                <button type="submit" name="button" class="submit-changes">Submit Changes</button>
-                <button type="button" name="button" class="delete-posting">Delete Posting</button>
-              </li>
-              <% } %>
-          </ul>
-
     </div>
 
-    <script src="main.js"></script>
+    <div class="lists">
+      <ul class="postings">
+        <!-- looping through the collection array  -->
+        <% for(var i=0; i<postings.length; i++) {%>
+          <li class="posting">
+            <!-- parentNode of change status -->
+
+            <!-- looping through the different documents and pulling off the name property -->
+            <h3 class="posting-name">
+                    <%= postings[i].name %>
+                  </h3>
+            <p class="posting-location">
+              <%= postings[i].location %>
+            </p>
+            <p class="posting-status">
+              <%= postings[i].status %>
+            </p>
+            <!-- <p class="posting-id" hidden>
+              <%= postings[i]._id %>
+            </p> -->
+
+            <button type="button" name="button" class="change-status">Change Status</button>
+            <button type="button" name="button" class="delete-posting">Delete Posting</button>
+          </li>
+          <% } %>
+      </ul>
+    </div>
+
+  </div>
+
+  <script src="main.js"></script>
 
 </body>
 

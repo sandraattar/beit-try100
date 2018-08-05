@@ -2,19 +2,17 @@ module.exports = function(app, passport, db) {
 
 // normal routes ===============================================================
 
-    // show the home page (will also have our login links)
-    app.get('/', function(req, res) {
-        res.render('index.ejs');
-    });
+    // // show the home page (will also have our login links)
+    // app.get('/', function(req, res) {
+    //     res.render('login.ejs');
+    // });
 
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
         db.collection('postings').find().toArray((err, result) => {
           if (err) return console.log(err)
-          res.render('profile.ejs', {
-            user : req.user,
-            postings: result
-          })
+          res.render('profile.ejs', { user : req.user, postings: result })
+          console.log(result)
         })
     });
 
@@ -26,76 +24,37 @@ module.exports = function(app, passport, db) {
 
 // posting section routes ===============================================================
 
-    app.post('/api/posting', (req, res) => {
-      db.collection('postings').save({name: req.body.name, location: req.body.location, status: req.body.status}, (err, result) => {
+    app.post('/api/posting', isLoggedIn, (req, res) => {
+      let uid = req.user._id;
+      db.collection('postings').save({name: req.body.name, location: req.body.location, status: req.body.status, uid: uid}, (err, result) => {
         if (err) return console.log(err)
         console.log('saved to database')
         res.redirect('/profile')
       })
     })
 
-    app.put('/api/shelter', (req, res) => {
-      db.collection('postings')
-      .findOneAndUpdate({name: req.body.name, location: req.body.location, status: req.body.status}, {
-        $set: {
-          status: "shelter"
-        }
-      }, {
-        sort: {_id: -1},
-        upsert: true
-      }, (err, result) => {
-        if (err) return res.send(err)
-        res.send(result)
-      })
+    app.put('/api/status', (req, res) => {
+      // if(req.user){
+        db.collection('postings')
+        .findOneAndUpdate({name: req.body.name, location: req.body.location}, {
+          $set: {
+            status: req.body.status
+          }
+        }, {
+          sort: {_id: -1},
+          upsert: true
+        }, (err, result) => {
+          if (err) return res.send(err)
+          res.send(result)
+        })
+      // }
     })
 
-    app.put('/api/food', (req, res) => {
-      db.collection('postings')
-      .findOneAndUpdate({name: req.body.name, location: req.body.location,status:req.body.status}, {
-        $set: {
-          status: "food"
-        }
-      }, {
-        sort: {_id: -1},
-        upsert: true
-      }, (err, result) => {
-        if (err) return res.send(err)
-        res.send(result)
-      })
-    })
 
-    app.put('/api/shower', (req, res) => {
-      db.collection('postings')
-      .findOneAndUpdate({name: req.body.name, location: req.body.location,status:req.body.status}, {
-        $set: {
-          status: "shower"
-        }
-      }, {
-        sort: {_id: -1},
-        upsert: true
-      }, (err, result) => {
-        if (err) return res.send(err)
-        res.send(result)
-      })
-    })
 
-    app.put('/api/hosted', (req, res) => {
-      db.collection('postings')
-      .findOneAndUpdate({name: req.body.name, location: req.body.location,status:req.body.status}, {
-        $set: {
-          status: "hosted"
-        }
-      }, {
-        sort: {_id: -1},
-        upsert: true
-      }, (err, result) => {
-        if (err) return res.send(err)
-        res.send(result)
-      })
-    })
-
-    app.delete('/api/delete', (req, res) => {
-      db.collection('postings').findOneAndDelete({name: req.body.name, location: req.body.location, status:req.body.status}, (err, result) => {
+    app.delete('/api/delete', isLoggedIn, (req, res) => {
+      console.log('delete')
+      db.collection('postings').findOneAndDelete({name: req.body.name, location: req.body.location, status: req.body.status}, (err, result) => {
         if (err) return res.send(500, err)
         res.send('Posting deleted!')
       })
@@ -108,7 +67,8 @@ module.exports = function(app, passport, db) {
     // locally --------------------------------
         // LOGIN ===============================
         // show the login form
-        app.get('/login', function(req, res) {
+        app.get('/', function(req, res) {
+          //two arguments passing through the render method: the ejs file and the data that will pass through ejs template
             res.render('login.ejs', { posting: req.flash('loginMessage') });
 
         });
@@ -129,7 +89,7 @@ module.exports = function(app, passport, db) {
         // process the signup form
         app.post('/signup', passport.authenticate('local-signup', {
             successRedirect : '/profile', // redirect to the secure profile section
-            failureRedirect : '/signup', // redirect back to the signup page if there is an error
+            failureRedirect : '/', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }));
 
