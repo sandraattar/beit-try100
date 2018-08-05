@@ -27,13 +27,13 @@
     <div class="inputs">
       <% if (user.local.email) { %>
         <form action="/api/posting" method="POST">
-          <label for="name">Refugee Name</label>
+          <label for="name">Host Name</label>
           <input type="text" name="name" placeholder="enter your name">
 
           <label for="location">Location</label>
           <input type="text" name="location" placeholder="enter your current location">
 
-          <label for="status">I am Looking for:</label>
+          <label for="status">I am Offering:</label>
           <select id="status" class="" name="status">
             <option value="shelter" selected="selected">shelter</option>
             <option value="food">food</option>

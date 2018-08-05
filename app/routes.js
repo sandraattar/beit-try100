@@ -6,7 +6,22 @@ module.exports = function(app, passport, db) {
     // app.get('/', function(req, res) {
     //     res.render('login.ejs');
     // });
-
+    // HOME PAGE =========================
+    app.get('/home', isLoggedIn, function(req, res) {
+        db.collection('postings').find().toArray((err, result) => {
+          if (err) return console.log(err)
+          res.render('index.ejs', { user : req.user, postings: result })
+          console.log(result)
+        })
+    });
+    // HOST SECTION =========================
+    app.get('/host', isLoggedIn, function(req, res) {
+        db.collection('postings').find().toArray((err, result) => {
+          if (err) return console.log(err)
+          res.render('host.ejs', { user : req.user, postings: result })
+          console.log(result)
+        })
+    });
     // PROFILE SECTION =========================
     app.get('/profile', isLoggedIn, function(req, res) {
         db.collection('postings').find().toArray((err, result) => {
@@ -75,7 +90,7 @@ module.exports = function(app, passport, db) {
 
         // process the login form
         app.post('/login', passport.authenticate('local-login', {
-            successRedirect : '/profile', // redirect to the secure profile section
+            successRedirect : '/home', // redirect to the secure profile section
             failureRedirect : '/login', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }));
@@ -93,14 +108,6 @@ module.exports = function(app, passport, db) {
             failureFlash : true // allow flash messages
         }));
 
-
-
-// =============================================================================
-// UNLINK ACCOUNTS =============================================================
-// =============================================================================
-// used to unlink accounts. for social accounts, just remove the token
-// for local account, remove email and password
-// user account will stay active in case they want to reconnect in the future
 
     // local -----------------------------------
     app.get('/unlink/local', isLoggedIn, function(req, res) {
